@@ -8,6 +8,7 @@ meme to start with for better reading
 A classic Sudoku Game in C Terminal. Game supports saving, loading game and has 3 lvls (4x4, 9x9, 16x16) and 3 difficulties (easy, medium, hard)
 
 Instruction to the game provided with screenshots of example gameplay:
+
 What is sudoku? - Sudoku originally called Number Place is a logic-based, combinatorial number-placement puzzle. In classic Sudoku, the objective is to fill a 9 × 9 grid with digits so that each column, each row, and each of the nine 3 × 3 subgrids that compose the grid (also called "boxes", "blocks", or "regions") contains all of the digits from 1 to 9. This version also supports 4x4 and 16x16 grid.
 
 **How the Program looks?:**
