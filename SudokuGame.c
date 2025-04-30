@@ -16,7 +16,7 @@
 char numStr[STR_SIZE];
 
 
-bool unUsedInBox(int size, char*** grid, int rowStart, int colStart, const char* num) {
+bool unUsedInBox(int size, char*** grid, int rowStart, int colStart, const char* num) { // check if number is in box
     int box_size = (int)(sqrt(size)); // square size
     for (int i = 0; i < box_size; i++) {
         for (int j = 0; j < box_size; j++) {
@@ -27,7 +27,7 @@ bool unUsedInBox(int size, char*** grid, int rowStart, int colStart, const char*
     return true;
 }
 
-bool unUsedInRow(int size, char*** grid, int row, const char* num) {
+bool unUsedInRow(int size, char*** grid, int row, const char* num) { // check if number is in row   
     for (int j = 0; j < size; j++) {
         if (strcmp(grid[row][j], num) == 0)
             return false;
@@ -35,7 +35,7 @@ bool unUsedInRow(int size, char*** grid, int row, const char* num) {
     return true;
 }
 
-bool unUsedInCol(int size, char*** grid, int col, const char* num) {
+bool unUsedInCol(int size, char*** grid, int col, const char* num) { // check if number is in column
     for (int i = 0; i < size; i++) {
         if (strcmp(grid[i][col], num) == 0)
             return false;
@@ -43,14 +43,14 @@ bool unUsedInCol(int size, char*** grid, int col, const char* num) {
     return true;
 }
 
-bool checkIfSafe(int size, char*** grid, int row, int col, const char* num) {
+bool checkIfSafe(int size, char*** grid, int row, int col, const char* num) { // check if number is safe to put in grid
     int box_size = (int)(sqrt(size));
     return unUsedInRow(size, grid, row, num) &&
            unUsedInCol(size, grid, col, num) &&
            unUsedInBox(size, grid, row - row % box_size, col - col % box_size, num);
 }
 
-char*** createDynamicGrid(int size) {
+char*** createDynamicGrid(int size) { // Create a dynamic 2D array of strings
     char*** grid = (char***)malloc(size * sizeof(char**));// Allocate memory for rows
     if(!grid) return NULL;
     
@@ -80,7 +80,7 @@ char*** createDynamicGrid(int size) {
     return grid;
 }
 
-void freeDynamicGrid(char*** grid, int size) {
+void freeDynamicGrid(char*** grid, int size) { // Free the dynamic 2D array of strings
     if(!grid) return;
     for(int i = 0; i < size; i++) {
         if(grid[i]) {
@@ -91,7 +91,7 @@ void freeDynamicGrid(char*** grid, int size) {
     free(grid);
 }
 
-void fillBox(int size, char*** grid, int rowStart, int colStart) {
+void fillBox(int size, char*** grid, int rowStart, int colStart) { // Fill a box with random numbers 
     int box_size = (int)(sqrt(size));
     char numStr[STR_SIZE];
     for (int i = 0; i < box_size; i++) {
@@ -106,14 +106,14 @@ void fillBox(int size, char*** grid, int rowStart, int colStart) {
     }
 }
 
-void fillDiagonal(int size, char*** grid) {
+void fillDiagonal(int size, char*** grid) { // Fill the diagonal boxes
     int box_size = (int)(sqrt(size));
     for (int i = 0; i < size; i += box_size) {
         fillBox(size, grid, i, i);
     }
 }
 
-bool fillRemaining(int size, char*** grid, int i, int j) {
+bool fillRemaining(int size, char*** grid, int i, int j) { // Fill the remaining cells in the grid
     if (i == size) return true;
     if (j == size) return fillRemaining(size, grid, i + 1, 0); // Move to next row
     if (strcmp(grid[i][j], "-") != 0) return fillRemaining(size, grid, i, j + 1); // if empty fillRemaining
@@ -144,7 +144,7 @@ bool fillRemaining(int size, char*** grid, int i, int j) {
     return false;
 }
 
-void removeKDigits(int size, char*** grid, int k) {
+void removeKDigits(int size, char*** grid, int k) { // Remove k digits from the grid
     int total = size * size;
     int* positions = malloc(total * sizeof(int));
     for (int i = 0; i < total; i++) positions[i] = i;
@@ -167,7 +167,7 @@ void removeKDigits(int size, char*** grid, int k) {
 }
 
 
-void sudokuGenerator(int size, char*** grid, char*** solution, int k) {
+void sudokuGenerator(int size, char*** grid, char*** solution, int k) { // Generate Sudoku grid
     for (int i = 0; i < size; i++)
         for (int j = 0; j < size; j++)
             strcpy(grid[i][j], "-"); // Initialize grid with placeholder
@@ -182,7 +182,7 @@ void sudokuGenerator(int size, char*** grid, char*** solution, int k) {
     removeKDigits(size, grid, k);
 }
 
-void printGrid(int size, char*** grid, int* moves) {
+void printGrid(int size, char*** grid, int* moves) { // Print the grid
     int box = (int)sqrt(size);
     printf("    ");
     for (int c = 0; c < size; c++) {    
@@ -221,7 +221,7 @@ void printGrid(int size, char*** grid, int* moves) {
     printf("\nNumber of moves: %d\n\n", *moves); // print number of moves
 }
 
-bool isComplete(int size, char*** grid, char*** solution) {
+bool isComplete(int size, char*** grid, char*** solution) { // Check if the grid is complete
     for (int i = 0; i < size; i++)
         for (int j = 0; j < size; j++)
             if (strcmp(grid[i][j], solution[i][j]) != 0)
@@ -229,7 +229,7 @@ bool isComplete(int size, char*** grid, char*** solution) {
     return true;
 }
 
-void userInsert(int size, char*** grid, char*** solution, int* moves) {
+void userInsert(int size, char*** grid, char*** solution, int* moves) { // User insert number in grid
     int x, y, num;
     char numStr[3];
 
@@ -301,7 +301,7 @@ int main() {
                 case '1': k = (size * size) / 4; break;
                 case '2': k = (size * size) / 3; break;
                 case '3': k = (size * size) / 2; break;
-                default: printf("Bad choice, default is set to Medium\n"); k = (size * size) / 3;
+                default: printf("Wrong choice, default difficulty is set to Medium\n"); k = (size * size) / 3;
             }
             sudokuGenerator(size, grid, solutionGrid, k);
         }
@@ -346,7 +346,6 @@ int main() {
             if (op == 1) {
                 userInsert(size, grid, solutionGrid, &moves);
             } else if (op == 2) {
-                system(CLEAR);
                 saveGameToFile(size, grid, solutionGrid, &moves);
             } else {
                 break;

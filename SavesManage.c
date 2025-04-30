@@ -14,7 +14,7 @@
 
 
 
-void saveGameToFile(int size, char ***grid, char ***solution, int *moves) {
+void saveGameToFile(int size, char ***grid, char ***solution, int *moves) { // Save game to file
     #ifdef _WIN32 // if code is used on linux or macOS, _mkdir is for them
         _mkdir("saves");
     #else
@@ -45,9 +45,9 @@ void saveGameToFile(int size, char ***grid, char ***solution, int *moves) {
     printf("Gameplay saved as: %s\n", filename);
 }
 
-int listSavedGames(char filenames[][100], int maxFiles) {
-    DIR *d;
-    struct dirent *dir;
+int listSavedGames(char filenames[][100], int maxFiles) { // generate and show list of saved games
+    DIR *d; 
+    struct dirent *dir; // dirent.h is used to read directory entries
     d = opendir("saves");
     if (!d) {
         printf("No such a folder as saves.\n");
@@ -67,9 +67,9 @@ int listSavedGames(char filenames[][100], int maxFiles) {
     return count;
 }
 
-bool loadGameFromFile(char ***grid, char ***solution, int *size, int *moves) {
-    char files[50][100];
-    int count = listSavedGames(files, 50);
+bool loadGameFromFile(char ***grid, char ***solution, int *size, int *moves) { // Load game from file
+    char files[50][100]; // array to store filenames, Maximum 50 files
+    int count = listSavedGames(files, 50); // get list of saved games
     if (count == 0) {
         printf("No saved Gameplays.\n");
         return false;
@@ -81,8 +81,8 @@ bool loadGameFromFile(char ***grid, char ***solution, int *size, int *moves) {
         printf("Wrong choice.\n");
         return false;
     }
-    FILE *file = fopen(files[choice - 1], "r");
-    if (!file) {
+    FILE *file = fopen(files[choice - 1], "r"); 
+    if (!file) { //error handling
         printf("Can't open file.\n");
         return false;
     }
