@@ -1,4 +1,5 @@
 #include "SudokuGame.h"
+#include "solver.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -264,6 +265,89 @@ void userInsert(int size, char*** grid, char*** solution, int* moves) { // User 
     } 
     
 }
+
+bool solveSudokuSolver(int size, char*** grid) {
+    if (size != 9) {
+    printf("Solver supports only 9x9 Sudoku puzzles!\n");
+    return false;
+}
+
+    // Function declarations to avoid implicit declarations
+    int** solveSimulatedAnnealing(int** board, int size, int initialTemp, double coolingRate, int maxIterations);
+    void freeBoard(int** board, int size);
+
+    // 1. Convert char*** grid -> int**
+    int** board = malloc(size * sizeof(int*));
+    for (int i = 0; i < size; i++) {
+        board[i] = malloc(size * sizeof(int));
+        for (int j = 0; j < size; j++) {
+            if (strcmp(grid[i][j], "-") == 0)
+                board[i][j] = 0;
+            else
+                board[i][j] = atoi(grid[i][j]);
+        }
+    }
+
+    // 2. Call the solver
+    int initialTemp = 1000;
+    double coolingRate = 0.99;
+    int maxIterations = 100000;
+    int** solution = solveSimulatedAnnealing(board, size, initialTemp, coolingRate, maxIterations);
+
+    // 3. Copy results back to grid
+    bool solved = true;
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            if (solution[i][j] == 0) {
+                solved = false;
+                strcpy(grid[i][j], "-");
+            } else {
+                snprintf(grid[i][j], STR_SIZE, "%d", solution[i][j]);
+            }
+        }
+    }
+
+    // 4. Free memory
+    for (int i = 0; i < size; i++) free(board[i]);
+    free(board);
+    freeBoard(solution, size);
+
+    return solved;
+}
+
+void solveSudokuWithSolver(int size, char*** grid, char*** solutionGrid, int* moves) {
+    if (size != 9) {
+        printf("Solver only works for 9x9 puzzles.\n");
+        printf("Press enter to continue...\n");
+        while (getchar() != '\n');
+        getchar();
+        system(CLEAR);
+        return;
+    }
+
+    printf("Running solver...\n");
+    bool solved = solveSudokuSolver(size, grid);
+
+    if (solved) {
+        printf("Solution applied!\n");
+        printGrid(size, grid, moves);
+        printf("Congratulations! You solved Sudoku with the solver's help!\n");
+        printf("Press enter to continue to main menu...\n");
+        while (getchar() != '\n');
+        getchar();
+        system(CLEAR);
+        return; // Return to let the main loop handle the win
+        
+    } else {
+        printf("Solver could not find a valid solution.\n");
+    }
+    
+    printf("Press enter to continue...\n");
+    while (getchar() != '\n');
+    getchar();
+    system(CLEAR);
+}
+
 int main() {
     srand((unsigned)time(NULL));
     char ***grid = NULL, ***solutionGrid = NULL;
@@ -340,17 +424,18 @@ int main() {
                     getchar(); 
                 break;
             }
-            printf("What you want to do?\n1. Insert number\n2. Save game\n3. Exit\nchoose: ");
+            printf("What you want to do?\n1. Insert number\n2. Save game\n3. Solve with solver\n4. Exit\nchoose: ");
             int op;
             scanf("%d", &op);
             if (op == 1) {
                 userInsert(size, grid, solutionGrid, &moves);
             } else if (op == 2) {
                 saveGameToFile(size, grid, solutionGrid, &moves);
+            } else if (op == 3) {
+                solveSudokuWithSolver(size, grid, solutionGrid, &moves);
             } else {
                 break;
             }
-
         }
         freeDynamicGrid(grid, size);
         freeDynamicGrid(solutionGrid, size);
